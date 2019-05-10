@@ -51,3 +51,5 @@ http://localhost/path/to/index.php/gii
 ```
 
 then you can see our new Restful controller generator:
+
+![gii-rest-home](images/gii-rest-home.png)
