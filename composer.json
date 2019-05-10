@@ -1,0 +1,22 @@
+{
+  "name": "deanisty/gii-rest",
+  "description": "auto generate restful controller for yii2",
+  "type": "extension",
+  "keywords": ["yii2","gii","extension","swagger","Restful","document"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "yunzhou.cao",
+      "email": "yunzhou.cao@office.51fanli.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "yiisoft/yii2-gii": "~2.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "deanisty\\": "src"
+    }
+  }
+}
