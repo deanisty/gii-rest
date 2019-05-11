@@ -8,6 +8,7 @@
 namespace deanisty\generators\controller;
 
 use Yii;
+use yii\db\ActiveRecord;
 use yii\gii\CodeFile;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
@@ -42,7 +43,7 @@ class Generator extends \yii\gii\Generator
     /**
      * @var string the base class of the controller
      */
-    public $baseClass = 'manage\controllers\BaseController';
+    public $baseClass = 'yii\rest\ActiveController';
     /**
      * @var string list of action IDs separated by commas or spaces
      */
@@ -63,7 +64,7 @@ class Generator extends \yii\gii\Generator
     public function getDescription()
     {
         return 'This generator helps you to quickly generate a new restful controller class with
-            '. $this->actions . ' controller actions.';
+            '. $this->actions . ' controller actions. And also generate swagger comments as while.';
     }
 
     /**
@@ -103,6 +104,7 @@ class Generator extends \yii\gii\Generator
     {
         return [
             'controller.php',
+            'swaggerModel.php',
         ];
     }
 
@@ -177,6 +179,11 @@ class Generator extends \yii\gii\Generator
             $this->getControllerFile(),
             $this->render('controller.php')
         );
+        // generate swagger model
+        $files[] = new CodeFile(
+            $this->getSwaggerModelFile(),
+            $this->render('swaggerModel.php')
+        );
 
         return $files;
     }
@@ -193,12 +200,77 @@ class Generator extends \yii\gii\Generator
         return $actions;
     }
 
+    /***
+     * @return object the db model object needs by controller
+     */
+    public function getControllerModel()
+    {
+        return new $this->modelClass;
+    }
+
+    public function getControllerModelName()
+    {
+        return StringHelper::basename($this->modelClass);
+    }
+
+    /***
+     * @return string extract module name from controller class namespace
+     */
+    public function getModule()
+    {
+        $module = '';
+        preg_match("#\\\\modules\\\\(\w+)\\\\#i", $this->getControllerNamespace(), $match);
+        if(count($match) > 1) {
+            $module = $match[1];
+        }
+
+        return $module;
+    }
     /**
      * @return string the controller class file path
      */
     public function getControllerFile()
     {
         return Yii::getAlias('@' . str_replace('\\', '/', $this->controllerClass)) . '.php';
+    }
+
+    /***
+     * @return string the swagger model file path
+     */
+    public function getSwaggerModelFile()
+    {
+        $controllerPath = $this->getControllerFile();
+        $moduleName = $this->getModule();
+        $modelName = $this->getControllerModelName();
+        if($moduleName !== '') {
+            preg_match("/^(.*)\/modules\//", $controllerPath, $matches);
+            $filePath = $matches[1] . '/swagger/definitions/' . $moduleName . '/' .
+                $modelName . '.php';
+        } else {
+            preg_match("/^(.*)\/controllers\//", $controllerPath, $matches);
+            $filePath = $matches[1] . '/swagger/definitions/' . $moduleName . '/' .
+                $modelName . '.php';
+        }
+
+        return $filePath;
+    }
+
+    /***
+     * @return string get swagger definition namespace base on controller class name
+     */
+    public function getSwaggerModelNamespace()
+    {
+        $controllerNamespace = $this->getControllerNamespace();
+        $moduleName = $this->getModule();
+        if($moduleName !== '') {
+            preg_match("/^(.*)\\\\modules\\\\/", $controllerNamespace, $matches);
+            $namespace = $matches[1] . '\\swagger\\definitions\\' . $moduleName;
+        } else {
+            preg_match("/^(.*)\\\\controllers\\\\/", $controllerNamespace, $matches);
+            $namespace = $matches[1] . '\\swagger\\definitions\\' . $moduleName;
+        }
+
+        return $namespace;
     }
 
     /**
@@ -235,5 +307,42 @@ class Generator extends \yii\gii\Generator
     {
         $name = StringHelper::basename($this->controllerClass);
         return ltrim(substr($this->controllerClass, 0, - (strlen($name) + 1)), '\\');
+    }
+
+    /***
+     * @return array valid table attribute to be used by front user
+     */
+    public function getValidAttributes()
+    {
+        /***
+         * @var $model ActiveRecord
+         */
+        $model = $this->getControllerModel();
+        try {
+            $schema = $model::getTableSchema();
+        } catch(\Exception $e) {
+
+        }
+        $columns = $schema->columns;
+        // TODO maybe can filter by scenario
+        $attributes = $model->activeAttributes();
+
+        $validAttributes = array();
+        foreach($columns as $column)
+        {
+            $attribute = array();
+            if(in_array($column->name, $attributes)) {
+                // column is allow to display
+                $attribute['name'] = $column->name;
+                $attribute['type'] = $column->phpType;
+                $attribute['comment'] = $column->comment;
+                $attribute['required'] = $model->isAttributeRequired($column->name);
+                $attribute['isPrimaryKey'] = $column->isPrimaryKey;
+
+                array_push($validAttributes, $attribute);
+            }
+        }
+
+        return $validAttributes;
     }
 }
