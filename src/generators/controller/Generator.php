@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace deanisty\gii\generators\controller\restful;
+namespace deanisty\generators\controller;
 
 use Yii;
 use yii\gii\CodeFile;
