@@ -91,8 +91,12 @@ class Comment
      *    @SWG\Parameter(
      *        in = "formData",
      *        name = "'.$attribute['name'].'",
-     *        description = "'.$attribute['comment'].'",
-     *        required = '.$attribute['required'] ? 'true' : 'false' .',
+     *        description = "'.$attribute['comment'].'",';
+                if($attribute['required']) {
+                    $comment .= '
+     *        required = true';
+                }
+                $comment .= '
      *        type = "'.$attribute['type'].'",
      *     ),';
             }
@@ -130,7 +134,6 @@ class Comment
      *        in = "formData",
      *        name = "'.$attribute['name'].'",
      *        description = "'.$attribute['comment'].'",
-     *        required = false,
      *        type = "'.$attribute['type'].'",
      *     ),';
             }
