@@ -43,7 +43,7 @@ class Generator extends \yii\gii\Generator
     /**
      * @var string the base class of the controller
      */
-    public $baseClass = 'yii\rest\ActiveController';
+    public $baseClass = yii\rest\ActiveController::class;
     /**
      * @var string list of action IDs separated by commas or spaces
      */
