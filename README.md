@@ -53,3 +53,5 @@ http://localhost/path/to/index.php/gii
 then you can see our new Restful controller generator:
 
 ![gii-rest-home](images/gii-rest-home.png)
+
+view [docs for swagger-php](https://github.com/zircote/swagger-php/blob/2.x/docs/Getting-started.md) for more examples.
