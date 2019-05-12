@@ -43,7 +43,7 @@ class Generator extends \yii\gii\Generator
     /**
      * @var string the base class of the controller
      */
-    public $baseClass = yii\rest\ActiveController::class;
+    public $baseClass = 'yii\rest\ActiveController';
     /**
      * @var string list of action IDs separated by commas or spaces
      */
@@ -80,7 +80,7 @@ class Generator extends \yii\gii\Generator
             [['baseClass', 'modelClass'], 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
             ['actions', 'match', 'pattern' => '/^[a-z][a-z0-9\\-,\\s]*$/', 'message' => 'Only a-z, 0-9, dashes (-), spaces and commas are allowed.'],
             ['modelClass', 'validateClass', 'params' => ['extends' => yii\db\ActiveRecord::class,]],
-            ['baseClass', 'validateClass', 'params' => ['extends' => yii\rest\ActiveController::class,]],
+            ['baseClass', 'validateClass', 'params' => ['extends' => 'yii\rest\ActiveController',]],
         ]);
     }
 
