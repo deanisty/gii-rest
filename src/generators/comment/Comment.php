@@ -94,7 +94,7 @@ class Comment
      *        description = "'.$attribute['comment'].'",';
                 if($attribute['required']) {
                     $comment .= '
-     *        required = true';
+     *        required = true,';
                 }
                 $comment .= '
      *        type = "'.$attribute['type'].'",
