@@ -34,7 +34,7 @@ return [
             // here comes the addition configure for the extension
             'generators' => [ // generators
                 'restController' => [ // our new rest generator
-                    'class' => 'deanisty\gii\generators\controller\restful\Generator', // generator class name
+                    'class' => 'deanisty\generators\controller\Generator', // generator class name
                 ]
             ]
         ],
