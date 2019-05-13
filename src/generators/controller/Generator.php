@@ -48,6 +48,10 @@ class Generator extends \yii\gii\Generator
      * @var string list of action IDs separated by commas or spaces
      */
     public $actions = 'index,view,create,update,delete';
+    /***
+     * @var string current executing action name
+     */
+    public $currentAction = '';
 
 
     /**
@@ -324,7 +328,18 @@ class Generator extends \yii\gii\Generator
 
         }
         $columns = $schema->columns;
-        // TODO maybe can filter by scenario
+        // maybe can filter by scenario
+        $scenario = '';
+        try {
+            $modelReflection = new \ReflectionClass($model);
+            $scenario = $modelReflection->getConstant('SCENARIO_'.strtoupper($this->currentAction));
+        } catch (\Exception $e) {
+
+        }
+        // set scenario when create
+        if(!empty($scenario) && $this->currentAction == 'create') {
+            $model->scenario = $scenario;
+        }
         $attributes = $model->activeAttributes();
 
         $validAttributes = array();

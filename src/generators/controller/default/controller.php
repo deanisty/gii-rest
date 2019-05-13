@@ -35,29 +35,12 @@ class <?= StringHelper::basename($generator->controllerClass) ?> extends <?= Str
     }
 <?php
 
-// 控制器名
-$controller = $generator->getControllerID();
-
-// 获取 model 信息
-/***
- * @var $model \yii\db\ActiveRecord
- */
-try {
-    $model = $generator->getControllerModel();
-    $schema = $model::getTableSchema();
-}catch (Exception $e) {
-
-}
-$modelName = $generator->getControllerModelName();
-$primary_key = $schema->primaryKey;
-$columns = $schema->columns;
-
-/**** 获取 module ***/
-$module = $generator->getModule();
-
 ?>
 <?php foreach ($generator->getActionIDs() as $action): ?>
-    <?php echo Comment::$action($generator) ?>
+    <?php
+    $generator->currentAction = $action;
+    echo Comment::$action($generator)
+    ?>
     public function action<?= Inflector::id2camel($action) ?>()
     {
 

@@ -216,24 +216,21 @@ class Comment
      */
     protected static function extractProperties(Generator $generator)
     {
-        static $properties = array();
-        if(empty($properties)) {
-            try {
-                $model = $generator->getControllerModel();
-                $schema = $model::getTableSchema();
-            }catch (\Exception $e) {
+        try {
+            $model = $generator->getControllerModel();
+            $schema = $model::getTableSchema();
+        }catch (\Exception $e) {
 
-            }
-            $properties['modelName'] = $generator->getControllerModelName();
-            $properties['primaryKey'] = $schema->primaryKey;
-            $properties['columns'] = $schema->columns;
-
-            $properties['module'] = $generator->getModule();
-
-            $properties['controllerNames'] = Inflector::pluralize($generator->getControllerId());
-
-            $properties['attributes'] = $generator->getValidAttributes();
         }
+        $properties['modelName'] = $generator->getControllerModelName();
+        $properties['primaryKey'] = $schema->primaryKey;
+        $properties['columns'] = $schema->columns;
+
+        $properties['module'] = $generator->getModule();
+
+        $properties['controllerNames'] = Inflector::pluralize($generator->getControllerId());
+
+        $properties['attributes'] = $generator->getValidAttributes();
 
         return $properties;
     }
