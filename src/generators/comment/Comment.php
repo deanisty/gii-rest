@@ -119,16 +119,29 @@ class Comment
     public static function update(Generator $generator)
     {
         $attributes = self::extractProperties($generator)['attributes'];
+        $primaryKey = self::extractProperties($generator)['primaryKey'];
         $comment = '
     /**
      * @SWG\Put(path="/{{module}}/{{controllerNames}}/{{{primaryKey}}}",
      *     tags={"{{module}}"},
      *     summary="更新",
      *     produces={"application/json"},';
+        foreach($primaryKey as $pk) {
+            $comment .= '
+     *    @SWG\Parameter(
+     *        in = "path",
+     *        name = "'.$pk.'",
+     *        description = "'.$pk.'",
+     *        required = true,
+     *        type = "integer",
+     *     ),';
+        }
             foreach($attributes as $attribute)
             {
                 if($attribute['isPrimaryKey'])
+                    // 跳过主键
                     continue;
+
                 $comment .= '
      *    @SWG\Parameter(
      *        in = "formData",
