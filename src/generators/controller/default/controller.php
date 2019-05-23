@@ -41,7 +41,7 @@ class <?= StringHelper::basename($generator->controllerClass) ?> extends <?= Str
     $generator->currentAction = $action;
     echo Comment::$action($generator)
     ?>
-    public function action<?= Inflector::id2camel($action) ?>()
+    public function action<?= Inflector::id2camel($action) ?>(<?= in_array($action, ['view', 'delete']) ? '$id' : '' ?>)
     {
 
     }
